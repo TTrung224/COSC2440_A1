@@ -1,10 +1,12 @@
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Student {
     final private String id, name;
-    final private Date birthDate;
+    final private LocalDate birthDate;
 
-    public Student(String id, String name, Date birthDate) {
+    public Student(String id, String name, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
@@ -18,8 +20,7 @@ public class Student {
         return name;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
-
 }

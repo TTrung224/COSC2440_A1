@@ -1,6 +1,22 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class EnrolmentSystem implements StudentEnrolmentManager{
+    public static void main(String[] args){
+        EnrolmentSystem enrolmentSystem = new EnrolmentSystem();
+        Student s1 = new Student("s3891724","Trung", LocalDate.parse("2002-04-22"));
+        enrolmentSystem.addStudent(s1);
+        Course c1 = new Course("COSC2044","Further Programming", 12);
+        enrolmentSystem.addCourse(c1);
+
+        enrolmentSystem.add("s3891724", "COSC2044", "2021C");
+        System.out.println(enrolmentSystem.getStudentEnrolmentList());
+        enrolmentSystem.delete("s3891724","COSC2044","2021C");
+        System.out.println(enrolmentSystem.getStudentEnrolmentList());
+
+    }
+
     private ArrayList<StudentEnrolment> studentEnrolmentList;
     private ArrayList<Student> studentList;
     private ArrayList<Course> coursesList;
@@ -65,53 +81,132 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
         return sem;
     }
 
+    private void systemAdd(String studentID){
+        Scanner sc = new Scanner(System.in);
+
+        boolean flag;
+        do {
+            System.out.println("Student ID: " + studentID);
+            System.out.print("course ID of course you want to add: ");
+            String courseID = sc.nextLine();
+            System.out.println();
+            System.out.print("Semester that you want to enrol for this course: ");
+            String sem = sc.nextLine();
+            flag = this.add(studentID, courseID, sem);
+        }
+        while (!flag);
+    }
+
     @Override
-    public void add(String studentID, String courseID, String sem){
+    public boolean add(String studentID, String courseID, String sem){
         Student student = isStudentExisted(studentID);
         Course course = isCourseExisted(courseID);
         String semester = isSemValid(sem);
 
-        if (student == null)
+        if (student == null) {
             System.out.println("invalid student");
-        else if (course == null)
+            return false;
+        }
+        else if (course == null) {
             System.out.println("invalid course");
-        else if (semester == null)
+            return false;
+        }
+        else if (semester == null) {
             System.out.println("invalid semester");
+            return false;
+        }
         else{
             studentEnrolmentList.add(new StudentEnrolment(student, course, semester));
             System.out.println("enrol successful");
+            return true;
         }
     }
 
     @Override
-    public void update() {
+    public void update(String studentID) {
+        Student student = isStudentExisted(studentID);
+        if (student == null)
+            System.out.println("This student ID is not exist");
+        else {
+            System.out.println("Your enroled courses:");
+            for (StudentEnrolment item : studentEnrolmentList) {
+                if (item.getStudent() == student)
+                    System.out.println(item.getCourse().getId() + ": "
+                            + item.getCourse().getName() + " - "
+                            + item.getSemester());
+            }
 
+            String selection;
+            Scanner sc = new Scanner(System.in);
+
+            boolean flag = true;
+            do {
+                System.out.println("-------------------");
+                System.out.println("""
+                        What update you want to make:
+                          1) Add a course enrolment
+                          2) Delete a course enrolment""");
+                System.out.print(">>> ");
+                selection = sc.nextLine();
+                selection = selection.trim();
+
+                if (selection.equals("1") || selection.equals("2")) {
+                    if (selection.equals("1")) {
+                        this.systemAdd(studentID);
+                    } else {
+                        this.systemDelete(studentID);
+                    }
+                } else {
+                    flag = false;
+                }
+            } while (!flag);
+        }
+    }
+
+    private void systemDelete(String studentID){
+        Scanner sc = new Scanner(System.in);
+
+        boolean flag;
+        do {
+            System.out.println("Student ID: " + studentID);
+            System.out.print("course ID of course you want to delete: ");
+            String courseID = sc.nextLine();
+            System.out.println();
+            System.out.print("Semester that you enroled for this course: ");
+            String sem = sc.nextLine();
+            flag = this.delete(studentID, courseID, sem);
+        }
+        while (!flag);
     }
 
     @Override
-    public void delete(String studentID, String courseID, String sem) {
+    public boolean delete(String studentID, String courseID, String sem) {
         Student student = isStudentExisted(studentID);
         Course course = isCourseExisted(courseID);
         String semester = isSemValid(sem);
 
-        if (student == null)
+        if (student == null) {
             System.out.println("invalid student");
-        else if (course == null)
+            return false;
+        }
+        else if (course == null) {
             System.out.println("invalid course");
-        else if (semester == null)
+            return false;
+        }
+        else if (semester == null) {
             System.out.println("invalid semester");
+            return false;
+        }
         else {
-            boolean implementFlag = false;
             for (StudentEnrolment item : studentEnrolmentList) {
                 if (item.getStudent() == student && item.getCourse() == course && item.getSemester().equals(semester)) {
                     studentEnrolmentList.remove(item);
                     System.out.println("Delete successful");
-                    implementFlag = true;
-                    break;
+                    return true;
                 }
             }
-            if(!implementFlag)
-                System.out.println("information given is not valid");
+            System.out.println("information given is not valid");
+            return false;
         }
     }
 
@@ -124,12 +219,4 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
     public ArrayList<StudentEnrolment> getAll() {
         return null;
     }
-}
-
-interface StudentEnrolmentManager{
-    public void add(String studentID, String courseID, String sem);
-    public void update();
-    public void delete(String studentID, String courseID, String sem);
-    public StudentEnrolment getOne();
-    public ArrayList<StudentEnrolment> getAll();
 }
