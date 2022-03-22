@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 abstract class Report {
@@ -36,6 +39,24 @@ class allCourseForStudent extends Report{
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter file path to export report: ");
         String filePath = sc.nextLine();
+        System.out.printf("Courses of student %s:\n", student.getId());
+        try(PrintWriter pw = new PrintWriter(filePath)){
+            StringBuilder sb = new StringBuilder();
+            for (StudentEnrolment item: enrolmentSystem.getStudentEnrolmentList()) {
+                if (item.getStudent() == this.student) {
+                    System.out.println(item.getCourse());
+                    sb.append(item.getCourse().getId());
+                    sb.append(",");
+                    sb.append(item.getCourse().getName());
+                    sb.append(",");
+                    sb.append(item.getCourse().getNumberOfCredits());
+                    pw.println(sb);
+                }
+            }
+            System.out.println("report file exported");
+        } catch (FileNotFoundException e){
+            reportFile(enrolmentSystem);
+        }
     }
 }
 
