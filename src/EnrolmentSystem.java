@@ -23,12 +23,12 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
             do {
                 System.out.println(
                         """
-                                   Menu:
-                                     1) Enroll
-                                     2) Delete enrolment
-                                     3) Update enrolment
-                                     4) Report
-                                """);
+                           Menu:
+                             1) Enroll
+                             2) Delete enrolment
+                             3) Update enrolment
+                             4) Report
+                        """);
                 System.out.print(">>> ");
                 selection = sc.nextLine();
             } while (!selection.equals("1")&&!selection.equals("2")&&!selection.equals("3")&&!selection.equals("4"));
@@ -145,7 +145,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
         return null;
     }
 
-    private String isSemValid(String sem){
+    protected String isSemValid(String sem){
         if (sem.length()!=5)
             return null;
 
