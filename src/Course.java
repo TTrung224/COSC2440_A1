@@ -8,6 +8,11 @@ public class Course {
         this.numberOfCredits = numberOfCredits;
     }
 
+    @Override
+    public String toString() {
+        return id + ": " + name + "(Credit: " + numberOfCredits + ")";
+    }
+
     public String getId() {
         return id;
     }
