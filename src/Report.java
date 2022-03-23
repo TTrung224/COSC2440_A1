@@ -20,16 +20,16 @@ class allCourseForStudent extends Report{
         String sem;
         do {
             System.out.print("Student ID: ");
-            String studentID = sc.nextLine();
+            String studentID = sc.nextLine().trim().toUpperCase();
             System.out.print("Semester: ");
-            sem = sc.nextLine();
+            String semInput = sc.nextLine().trim().toUpperCase();
             System.out.println();
             stu = enrolmentSystem.isStudentExisted(studentID);
-            sem = enrolmentSystem.isSemValid(sem);
+            sem = enrolmentSystem.isSemValid(semInput);
             if (stu == null)
                 System.out.println("This student ID is not exist");
             else if (sem == null)
-                System.out.println("invalid semester input");
+                System.out.println("Invalid semester input");
 
         } while (stu == null || sem == null);
 
@@ -85,7 +85,7 @@ class allCourseForStudent extends Report{
                 System.out.printf("Student %s have not enroll in any courses in semester %s\n", student.getId(), semester);
             }
             else
-                System.out.println("report file generated");
+                System.out.println("Report file generated");
         } catch (FileNotFoundException e){
             reportFile(enrolmentSystem);
         }
@@ -102,16 +102,15 @@ class allStudentOfCourse extends Report{
         String sem;
         do {
             System.out.print("Course ID: ");
-            String courseID = sc.nextLine();
+            String courseID = sc.nextLine().trim().toUpperCase();
             System.out.print("Semester: ");
-            sem = sc.nextLine();
-            System.out.println();
+            String semInput = sc.nextLine().trim().toUpperCase();
             course = enrolmentSystem.isCourseExisted(courseID);
-            sem = enrolmentSystem.isSemValid(sem);
+            sem = enrolmentSystem.isSemValid(semInput);
             if (course == null)
                 System.out.println("This student ID is not exist");
             else if (sem == null)
-                System.out.println("invalid semester input");
+                System.out.println("Invalid semester input");
         } while (course == null || sem == null);
         this.course = course;
         this.semester = sem;
@@ -163,7 +162,7 @@ class allStudentOfCourse extends Report{
                 file.delete();
                 System.out.printf("This course %s has no student in semester %s \n", course.getId(), semester);
             } else
-                System.out.println("report file generated");
+                System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
             reportFile(enrolmentSystem);
         }
@@ -178,10 +177,10 @@ class allCourseInSem extends Report {
         String sem;
         do {
             System.out.print("Semester: ");
-            sem = sc.nextLine();
-            sem = enrolmentSystem.isSemValid(sem);
+            String semInput = sc.nextLine().trim().toUpperCase();
+            sem = enrolmentSystem.isSemValid(semInput);
             if (sem == null)
-                System.out.println("invalid semester input");
+                System.out.println("Invalid semester input");
         } while (sem == null);
         this.semester = sem;
     }
@@ -237,7 +236,7 @@ class allCourseInSem extends Report {
                 file.delete();
                 System.out.printf("This semester %s has no course \n", semester);
             } else
-                System.out.println("report file generated");
+                System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
             reportFile(enrolmentSystem);
         }
