@@ -10,7 +10,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return id + ": " + name + "(Credit: " + numberOfCredits + ")";
+        return id + ": " + name + " (Credit: " + numberOfCredits + ")";
     }
 
     public String getId() {

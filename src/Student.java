@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Student {
     final private String id, name, birthDate;
 

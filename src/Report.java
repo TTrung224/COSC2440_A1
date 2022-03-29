@@ -5,9 +5,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 abstract class Report {
+    private String filePath;
     public abstract void report(EnrolmentSystem enrolmentSystem);
-
     public abstract void reportFile(EnrolmentSystem enrolmentSystem);
+
+    public void setFilePath(){
+        Scanner sc = new Scanner(System.in);
+        boolean flag;
+        do {
+            System.out.print("Enter file path to export report (.csv): ");
+            filePath = sc.nextLine();
+            flag = filePath.contains(".csv");
+        } while(!flag);
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
 }
 
 class allCourseForStudent extends Report{
@@ -53,19 +67,12 @@ class allCourseForStudent extends Report{
 
     @Override
     public void reportFile(EnrolmentSystem enrolmentSystem) {
-        Scanner sc = new Scanner(System.in);
         int count = 0;
-        String filePath;
-
-        boolean flag;
-        do {
-            System.out.print("Enter file path to export report (.csv): ");
-            filePath = sc.nextLine();
-            flag = filePath.contains(".csv");
-        } while(!flag);
-
-        System.out.printf("Courses of student %s in semester %s:\n", student.getId(), semester);
+        super.setFilePath();
+        String filePath = super.getFilePath();
         try(PrintWriter pw = new PrintWriter(filePath)){
+            System.out.println("-------------------");
+            System.out.printf("Courses of student %s in semester %s:\n", student.getId(), semester);
             for (StudentEnrolment item: enrolmentSystem.getStudentEnrolmentList()) {
                 if (item.getStudent() == this.student && item.getSemester().equals(semester)) {
                     count++;
@@ -131,19 +138,13 @@ class allStudentOfCourse extends Report{
 
     @Override
     public void reportFile(EnrolmentSystem enrolmentSystem) {
-        Scanner sc = new Scanner(System.in);
         int count = 0;
-        String filePath;
+        super.setFilePath();
+        String filePath = super.getFilePath();
 
-        boolean flag;
-        do {
-            System.out.print("Enter file path to export report (.csv): ");
-            filePath = sc.nextLine();
-            flag = filePath.contains(".csv");
-        } while(!flag);
-
-        System.out.printf("Students of course %s in semester %s:\n", course.getId(), semester);
         try (PrintWriter pw = new PrintWriter(filePath)) {
+            System.out.println("-------------------");
+            System.out.printf("Students of course %s in semester %s:\n", course.getId(), semester);
             for (StudentEnrolment item : enrolmentSystem.getStudentEnrolmentList()) {
                 if (item.getCourse() == this.course && item.getSemester().equals(semester)) {
                     count++;
@@ -203,20 +204,14 @@ class allCourseInSem extends Report {
 
     @Override
     public void reportFile(EnrolmentSystem enrolmentSystem) {
-        Scanner sc = new Scanner(System.in);
         int count = 0;
-        String filePath;
-
-        boolean flag;
-        do {
-            System.out.print("Enter file path to export report (.csv): ");
-            filePath = sc.nextLine();
-            flag = filePath.contains(".csv");
-        } while(!flag);
+        super.setFilePath();
+        String filePath = super.getFilePath();
 
         ArrayList<Course> courseList = new ArrayList<>();
-        System.out.printf("Courses offered in semester %s:\n", semester);
         try (PrintWriter pw = new PrintWriter(filePath)) {
+            System.out.println("-------------------");
+            System.out.printf("Courses offered in semester %s:\n", semester);
             for (StudentEnrolment item : enrolmentSystem.getStudentEnrolmentList()) {
                 if (item.getSemester().equals(semester) && !courseList.contains(item.getCourse())) {
                     courseList.add(item.getCourse());
