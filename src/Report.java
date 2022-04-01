@@ -25,8 +25,8 @@ abstract class Report {
 }
 
 class allCourseForStudent extends Report{
-    Student student;
-    String semester;
+    private final Student student;
+    private final String semester;
 
     public allCourseForStudent(EnrolmentSystem enrolmentSystem) {
         Scanner sc = new Scanner(System.in);
@@ -100,8 +100,8 @@ class allCourseForStudent extends Report{
 }
 
 class allStudentOfCourse extends Report{
-    Course course;
-    String semester;
+    private final Course course;
+    private final String semester;
 
     public allStudentOfCourse(EnrolmentSystem enrolmentSystem) {
         Scanner sc = new Scanner(System.in);
@@ -115,7 +115,7 @@ class allStudentOfCourse extends Report{
             course = enrolmentSystem.isCourseExisted(courseID);
             sem = enrolmentSystem.isSemValid(semInput);
             if (course == null)
-                System.out.println("This student ID is not exist");
+                System.out.println("This course ID is not exist");
             else if (sem == null)
                 System.out.println("Invalid semester input");
         } while (course == null || sem == null);
@@ -128,9 +128,10 @@ class allStudentOfCourse extends Report{
         int count = 0;
         System.out.printf("Students of course %s in semester %s:\n", course.getId(), semester);
         for (StudentEnrolment item: enrolmentSystem.getStudentEnrolmentList()){
-            if (item.getCourse() == this.course && item.getSemester().equals(semester))
+            if (item.getCourse() == this.course && item.getSemester().equals(semester)) {
                 count++;
                 System.out.println(item.getStudent());
+            }
         }
         if (count == 0)
             System.out.printf("This course %s has no student in semester %s \n", course.getId(), semester);
@@ -171,7 +172,7 @@ class allStudentOfCourse extends Report{
 }
 
 class allCourseInSem extends Report {
-    String semester;
+    private final String semester;
 
     public allCourseInSem(EnrolmentSystem enrolmentSystem) {
         Scanner sc = new Scanner(System.in);

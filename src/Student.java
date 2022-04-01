@@ -9,7 +9,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return id + ": " + name + "(Birthdate: " + birthDate + ")";
+        return id + ": " + name + " (Birthdate: " + birthDate + ")";
     }
 
     public String getId() {

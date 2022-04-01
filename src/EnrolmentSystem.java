@@ -30,7 +30,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                 System.out.println(
                         """
                            Menu:
-                             1) Enroll
+                             1) add enrolment
                              2) Delete enrolment
                              3) Update enrolment
                              4) Report
@@ -44,6 +44,8 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                     &&!selection.equals("3")
                     &&!selection.equals("4")
                     &&!selection.equals("5"));
+            System.out.println("-------------------");
+
 
             switch (selection) {
                 case "1" -> {
@@ -74,14 +76,42 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
 
                 case "3" -> {
                     Student student;
+                    String semester;
+                    int enrolledCourseCount;
                     do {
                         System.out.print("Student ID: ");
                         String studentID = sc.nextLine().trim().toUpperCase();
-                        System.out.println();
+                        System.out.print("Semester: ");
+                        String sem = sc.nextLine().trim().toUpperCase();
                         student = enrolmentSystem.isStudentExisted(studentID);
+                        semester = enrolmentSystem.isSemValid(sem);
+
+                        //Check if the student have any course in the semester
+                        //Because if student does not have course, then user choose option of delete, it will be an infinite loop
+                        enrolledCourseCount = 0;
+                        for (StudentEnrolment item : enrolmentSystem.studentEnrolmentList) {
+                            if (item.getStudent() == student && item.getSemester().equals(semester)) {
+                                enrolledCourseCount++;
+                                break;
+                            }
+                        }
+
                         if (student == null)
                             System.out.println("This student ID is not exist");
-                    } while (student == null);
+                        else if(semester == null)
+                            System.out.println("This semester is not valid");
+                        else if(enrolledCourseCount == 0)
+                            System.out.printf("Student %s does not have any courses in semester %s \n", student.getId(), semester);
+
+                    } while (student == null || semester == null || enrolledCourseCount == 0);
+
+                    //Print all the courses enrolled by the student in the semester
+                    System.out.printf("Your enrolled courses in semester %s: \n", semester);
+                    for (StudentEnrolment item : enrolmentSystem.studentEnrolmentList) {
+                        if (item.getStudent() == student && item.getSemester().equals(semester)) {
+                            System.out.println(item.getCourse());
+                        }
+                    }
 
                     String updateSelection;
                     int updateSelectionError=0;
@@ -103,9 +133,9 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                     } while (!updateSelection.equals("1") && !updateSelection.equals("2") && !updateSelection.equals("3"));
 
                     if (updateSelection.equals("1"))
-                        enrolmentSystem.update(student, "1");
+                        enrolmentSystem.update(student, semester, "1");
                     else if (updateSelection.equals("2"))
-                        enrolmentSystem.update(student, "2");
+                        enrolmentSystem.update(student, semester, "2");
                 }
 
                 case "4" -> {
@@ -260,7 +290,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
         }
         else{
             studentEnrolmentList.add(new StudentEnrolment(student, course, semester));
-            System.out.println("Enroll successful");
+            System.out.println("Enrol successful");
             return true;
         }
     }
@@ -268,6 +298,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
     // This method to remove studentEnrolment from the system by String parameters input
     @Override
     public boolean delete(String studentID, String courseID, String sem) {
+        //Call the getOne method to get the suitable StudentEnrolment
         StudentEnrolment studentEnrolment = this.getOne(studentID, courseID, sem);
             if(studentEnrolment != null) {
                 this.studentEnrolmentList.remove(studentEnrolment);
@@ -280,18 +311,8 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
 
     //This method will get a Student instance and option of the update to add or delete an enrolment of that student
     @Override
-    public void update(Student student, String option) {
+    public void update(Student student, String sem, String option) {
         Scanner sc = new Scanner(System.in);
-
-        //Print all the courses enrolled by the student
-        System.out.println("Your enrolled courses:");
-        for (StudentEnrolment item : this.studentEnrolmentList) {
-            if (item.getStudent() == student)
-                System.out.println(item.getCourse().getId() + ": "
-                        + item.getCourse().getName()
-                        + " (credit: " + item.getCourse().getNumberOfCredits() + ")"
-                        + " - " + item.getSemester());
-        }
 
         //Case that add enrolment
         if (option.equals("1")) {
@@ -299,10 +320,9 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
             //Get user input
             do {
                 System.out.println("Student ID: " + student.getId());
+                System.out.println("Semester: " + sem);
                 System.out.print("Course ID of course you want to add: ");
                 String courseID = sc.nextLine().trim().toUpperCase();
-                System.out.print("Semester that you want to enroll for this course: ");
-                String sem = sc.nextLine().trim().toUpperCase();
                 flag = this.add(student.getId(), courseID, sem);
             }
             while (!flag);
@@ -313,10 +333,9 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
             //Get user input
             do {
                 System.out.println("Student ID: " + student.getId());
+                System.out.println("Semester: " + sem);
                 System.out.print("Course ID of course you want to delete: ");
                 String courseID = sc.nextLine().trim().toUpperCase();
-                System.out.print("Semester that you enrolled for this course: ");
-                String sem = sc.nextLine().trim().toUpperCase();
                 flag = this.delete(student.getId(), courseID, sem);
             }
             while (!flag);
@@ -355,11 +374,13 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
         return null;
     }
 
+    //This method return the studentEnrolmentList
     @Override
     public ArrayList<StudentEnrolment> getAll() {
         return studentEnrolmentList;
     }
 
+    //This method to read data from a csv file and extract data into student, course and studentEnrolment lists
     private boolean readData(String filePath){
         try(BufferedReader br = new BufferedReader(new FileReader(filePath))){
             String line;
@@ -368,6 +389,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                 Student stu = null;
                 Course cou = null;
 
+                //Check the existence of studentID in the studentList
                 int studentCount = 0;
                 for (Student student: studentList){
                     if(colValue[0].trim().equals(student.getId())) {
@@ -376,11 +398,13 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                         break;
                     }
                 }
+                //If there is not such student, instantiate a new student and add it to studentList
                 if (studentCount == 0) {
                     stu = new Student(colValue[0].trim(), colValue[1].trim(), colValue[2].trim());
                     studentList.add(stu);
                 }
 
+                //Check the existence of courseID in the courseList
                 int courseCount = 0;
                 for (Course course: coursesList){
                     if(colValue[3].trim().equals(course.getId())) {
@@ -389,15 +413,15 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
                         break;
                     }
                 }
-
+                //If there is not such course, instantiate a new course and add it to courseList
                 if (courseCount == 0) {
                     cou = new Course(colValue[3].trim(), colValue[4].trim(), Integer.parseInt(colValue[5].trim()));
                     coursesList.add(cou);
                 }
-
+                //Instantiate a new studentEnrolment and add it to studentEnrolmentList each line of data
                 studentEnrolmentList.add(new StudentEnrolment(stu, cou, colValue[6]));
             }
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException fileNotFoundException){
             System.out.println("File not found");
             return false;
         } catch (IOException e){
