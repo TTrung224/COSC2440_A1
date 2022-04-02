@@ -12,15 +12,15 @@ public class Student {
         return id + ": " + name + " (Birthdate: " + birthDate + ")";
     }
 
-    public String getId() {
+    protected String getId() {
         return id;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
-    public String getBirthDate() {
+    protected String getBirthDate() {
         return birthDate;
     }
 }

@@ -9,15 +9,15 @@ public class StudentEnrolment {
         this.semester = semester;
     }
 
-    public Student getStudent() {
+    protected Student getStudent() {
         return student;
     }
 
-    public Course getCourse() {
+    protected Course getCourse() {
         return course;
     }
 
-    public String getSemester() {
+    protected String getSemester() {
         return semester;
     }
 

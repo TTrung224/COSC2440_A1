@@ -13,15 +13,15 @@ public class Course {
         return id + ": " + name + " (Credit: " + numberOfCredits + ")";
     }
 
-    public String getId() {
+    protected String getId() {
         return id;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
-    public int getNumberOfCredits() {
+    protected int getNumberOfCredits() {
         return numberOfCredits;
     }
 

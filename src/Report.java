@@ -9,7 +9,7 @@ abstract class Report {
     public abstract void report(EnrolmentSystem enrolmentSystem);
     public abstract void reportFile(EnrolmentSystem enrolmentSystem);
 
-    public void setFilePath(){
+    protected void setFilePath(){
         Scanner sc = new Scanner(System.in);
         boolean flag;
         do {
@@ -19,7 +19,7 @@ abstract class Report {
         } while(!flag);
     }
 
-    public String getFilePath() {
+    protected String getFilePath() {
         return filePath;
     }
 }
@@ -94,6 +94,7 @@ class allCourseForStudent extends Report{
             else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e){
+            System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
     }
@@ -166,6 +167,7 @@ class allStudentOfCourse extends Report{
             } else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
+            System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
     }
@@ -234,6 +236,7 @@ class allCourseInSem extends Report {
             } else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
+            System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
     }
