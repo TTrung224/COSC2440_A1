@@ -6,9 +6,16 @@ import java.util.Scanner;
 
 abstract class Report {
     private String filePath;
+
+    //Method to loop through the StudentEnrolmentList in the enrolmentSystem object
+    // and print out suitable enrolment of each report type
     public abstract void report(EnrolmentSystem enrolmentSystem);
+
+    //Method to loop through the StudentEnrolmentList in the enrolmentSystem object
+    // ,print out suitable enrolment of each report type and export a .csv file for the report
     public abstract void reportFile(EnrolmentSystem enrolmentSystem);
 
+    //This method to get user input for the filePath of the report file
     protected void setFilePath(){
         Scanner sc = new Scanner(System.in);
         boolean flag;
@@ -33,13 +40,16 @@ class allCourseForStudent extends Report{
         Student stu;
         String sem;
         do {
+            //Get user input for required information of the report
             System.out.print("Student ID: ");
             String studentID = sc.nextLine().trim().toUpperCase();
             System.out.print("Semester: ");
             String semInput = sc.nextLine().trim().toUpperCase();
             System.out.println();
+            //Call methods to check user input
             stu = enrolmentSystem.isStudentExisted(studentID);
             sem = enrolmentSystem.isSemValid(semInput);
+            //Some invalid case message
             if (stu == null)
                 System.out.println("This student ID is not exist");
             else if (sem == null)
@@ -68,8 +78,11 @@ class allCourseForStudent extends Report{
     @Override
     public void reportFile(EnrolmentSystem enrolmentSystem) {
         int count = 0;
+        //Call the setFilePath from abstract class to assign value to the filePath variable
         super.setFilePath();
         String filePath = super.getFilePath();
+
+        //Print the report and export the report file
         try(PrintWriter pw = new PrintWriter(filePath)){
             System.out.println("-------------------");
             System.out.printf("Courses of student %s in semester %s:\n", student.getId(), semester);
@@ -86,6 +99,7 @@ class allCourseForStudent extends Report{
                     pw.println(sb);
                 }
             }
+            //If there is no information suitable for the requested report, the file will be deleted
             if (count == 0) {
                 File file = new File(filePath);
                 file.delete();
@@ -94,6 +108,7 @@ class allCourseForStudent extends Report{
             else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e){
+            //If the user input directory not available, it will call this method reportFile again to get a new filePath
             System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
@@ -141,9 +156,12 @@ class allStudentOfCourse extends Report{
     @Override
     public void reportFile(EnrolmentSystem enrolmentSystem) {
         int count = 0;
+
+        //Call the setFilePath from abstract class to assign value to the filePath variable
         super.setFilePath();
         String filePath = super.getFilePath();
 
+        //Print the report and export the report file
         try (PrintWriter pw = new PrintWriter(filePath)) {
             System.out.println("-------------------");
             System.out.printf("Students of course %s in semester %s:\n", course.getId(), semester);
@@ -160,6 +178,8 @@ class allStudentOfCourse extends Report{
                     pw.println(sb);
                 }
             }
+
+            //If there is no information suitable for the requested report, the file will be deleted
             if (count == 0) {
                 File file = new File(filePath);
                 file.delete();
@@ -167,6 +187,7 @@ class allStudentOfCourse extends Report{
             } else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
+            //If the user input directory not available, it will call this method reportFile again to get a new filePath
             System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
@@ -211,7 +232,10 @@ class allCourseInSem extends Report {
         super.setFilePath();
         String filePath = super.getFilePath();
 
+        //Create an ArrayList of Courses objects to prevent course duplication in this type of report
         ArrayList<Course> courseList = new ArrayList<>();
+
+        //Print the report and export the report file
         try (PrintWriter pw = new PrintWriter(filePath)) {
             System.out.println("-------------------");
             System.out.printf("Courses offered in semester %s:\n", semester);
@@ -229,6 +253,7 @@ class allCourseInSem extends Report {
                     pw.println(sb);
                 }
             }
+            //If there is no information suitable for the requested report, the file will be deleted
             if (count == 0) {
                 File file = new File(filePath);
                 file.delete();
@@ -236,6 +261,7 @@ class allCourseInSem extends Report {
             } else
                 System.out.println("Report file generated");
         } catch (FileNotFoundException e) {
+            //If the user input directory not available, it will call this method reportFile again to get a new filePath
             System.out.println("Directory not found");
             reportFile(enrolmentSystem);
         }
