@@ -1,17 +1,14 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 class UnitTest {
     EnrolmentSystem enrolmentSystem;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp(){
         enrolmentSystem = new EnrolmentSystem();
         enrolmentSystem.readData("default.csv");
     }
@@ -200,7 +197,6 @@ class UnitTest {
         try {
             in.close();
             out.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
