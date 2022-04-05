@@ -3,9 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.Before;
 import org.junit.jupiter.api.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -72,7 +70,7 @@ class UnitTest {
     }
 
     @Test
-    void testUpdate() {
+    void testUpdate(){
         Student student = enrolmentSystem.isStudentExisted("S101312");
 
         ByteArrayInputStream in = new ByteArrayInputStream("COSC3321".getBytes());
@@ -86,6 +84,12 @@ class UnitTest {
 
         enrolmentSystem.update(student,"2020C","2");
         assertEquals(15,enrolmentSystem.getStudentEnrolmentList().size());
+
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -140,6 +144,22 @@ class UnitTest {
                 actual.append("\n");
         }
         assertEquals(expect, actual.toString());
+
+        //Check the exporting file
+        in = new ByteArrayInputStream("S101312_2020C.csv".getBytes());
+        System.setIn(in);
+
+        allCourseForStudent.reportFile(enrolmentSystem);
+        assertTrue(new File("S101312_2020C.csv").exists());
+        new File("S101312_2020C.csv").delete();
+
+        try {
+            in.close();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -168,6 +188,22 @@ class UnitTest {
                 actual.append("\n");
         }
         assertEquals(expect, actual.toString());
+
+        //Check the exporting file
+        in = new ByteArrayInputStream("COSC3321_2021A.csv".getBytes());
+        System.setIn(in);
+
+        allStudentOfCourse.reportFile(enrolmentSystem);
+        assertTrue(new File("COSC3321_2021A.csv").exists());
+        new File("COSC3321_2021A.csv").delete();
+
+        try {
+            in.close();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -194,5 +230,21 @@ class UnitTest {
                 actual.append("\n");
         }
         assertEquals(expect, actual.toString());
+
+        //Check the exporting file
+        in = new ByteArrayInputStream("Courses_2020C.csv".getBytes());
+        System.setIn(in);
+
+        allCourseInSem.reportFile(enrolmentSystem);
+        assertTrue(new File("Courses_2020C.csv").exists());
+        new File("Courses_2020C.csv").delete();
+
+        try {
+            in.close();
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
