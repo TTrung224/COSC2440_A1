@@ -381,7 +381,7 @@ public class EnrolmentSystem implements StudentEnrolmentManager{
     }
 
     //This method to read data from a csv file and extract data into student, course and studentEnrolment lists
-    private boolean readData(String filePath){
+    protected boolean readData(String filePath){
         try(BufferedReader br = new BufferedReader(new FileReader(filePath))){
             String line;
             while ((line = br.readLine()) != null) {
