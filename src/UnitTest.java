@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -116,8 +118,81 @@ class UnitTest {
     }
 
     @Test
-    void testReport(){
+    void testCourseForStudentReport(){
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
 
+        ByteArrayInputStream in = new ByteArrayInputStream("S101312\n2020C".getBytes());
+        System.setIn(in);
+
+        String expect = "COSC4030: Theory of Computation (Credit: 5)\n" +
+                "BUS2232: Business Law (Credit: 3)";
+
+        Report allCourseForStudent = new allCourseForStudent(enrolmentSystem);
+        allCourseForStudent.report(enrolmentSystem);
+
+        //Only get element having the index from 2 of this to ignore the user input asking message
+        String[] implement = out.toString().trim().split("\n");
+        StringBuilder actual = new StringBuilder();
+        for (int i = 2; i < implement.length; i++){
+            actual.append(implement[i]);
+            if (i != (implement.length-1))
+                actual.append("\n");
+        }
+        assertEquals(expect, actual.toString());
     }
 
+    @Test
+    void testStudentOfCourseReport() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        ByteArrayInputStream in = new ByteArrayInputStream("COSC3321\n2021A".getBytes());
+        System.setIn(in);
+
+        String expect = """
+                S101153: Jang Min Seon (Birthdate: 9/25/2000)
+                S103817: Thuy Thu Nguyen (Birthdate: 3/4/2000)
+                S101163: Joseph Fergile (Birthdate: 10/29/1998)
+                S102732: Mark Duong (Birthdate: 8/28/2001)""";
+
+        Report allStudentOfCourse = new allStudentOfCourse(enrolmentSystem);
+        allStudentOfCourse.report(enrolmentSystem);
+
+        //Only get element having the index from 1 of this to ignore the user input asking message
+        String[] implement = out.toString().trim().split("\n");
+        StringBuilder actual = new StringBuilder();
+        for (int i = 1; i < implement.length; i++){
+            actual.append(implement[i]);
+            if (i != (implement.length-1))
+                actual.append("\n");
+        }
+        assertEquals(expect, actual.toString());
+    }
+
+    @Test
+    void testCourseInSemReport() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        ByteArrayInputStream in = new ByteArrayInputStream("2020C".getBytes());
+        System.setIn(in);
+
+        String expect = """
+                COSC4030: Theory of Computation (Credit: 5)
+                BUS2232: Business Law (Credit: 3)""";
+
+        Report allCourseInSem = new allCourseInSem(enrolmentSystem);
+        allCourseInSem.report(enrolmentSystem);
+
+        //Only get element having the index from 1 of this to ignore the user input asking message
+        String[] implement = out.toString().trim().split("\n");
+        StringBuilder actual = new StringBuilder();
+        for (int i = 1; i < implement.length; i++){
+            actual.append(implement[i]);
+            if (i != (implement.length-1))
+                actual.append("\n");
+        }
+        assertEquals(expect, actual.toString());
+    }
 }
